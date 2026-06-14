@@ -209,9 +209,7 @@ Select Blockchain Network
       setAddress(e.target.value)
     }
 
-    placeholder="
-    0x742d35Cc6634C0532925a3b844Bc454e4438f44e
-    "
+    placeholder="0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
 
     className="
     mt-4
@@ -304,10 +302,16 @@ Select Blockchain Network
 </h2>
 
 
-<p
-  className={`mt-3 ${riskColorClass}`}
->
-  🟢 {result.risk} Risk Wallet
+<p className={`mt-3 ${riskColorClass}`}>
+  {
+    result.risk === "LOW"
+      ? "🟢"
+      : result.risk === "MEDIUM"
+      ? "🟡"
+      : "🔴"
+  }
+  {" "}
+  {result.risk} Risk Wallet
 </p>
 
 
@@ -559,18 +563,17 @@ gap-5
 
 <div className="
 bg-white/5
-border
-border-white/10
+border border-white/10
 rounded-2xl
 p-5
 ">
 
 <p className="text-gray-400">
-Wallet
+Network
 </p>
 
-<p className="mt-2 font-bold break-all">
-{result.wallet}
+<p className="mt-2 font-bold text-cyan-400">
+{result.network || network}
 </p>
 
 </div>
@@ -584,9 +587,20 @@ rounded-2xl
 p-5
 ">
 
+<div className="
+bg-white/5
+border border-white/10
+rounded-2xl p-5">
+
 <p className="text-gray-400">
 Network
 </p>
+
+<p className="mt-2 font-bold text-cyan-400">
+{network}
+</p>
+
+</div>
 
 <div
 className="
@@ -609,7 +623,7 @@ Transactions
 </div>
 
 <p className="mt-2 font-bold text-cyan-400">
-Ethereum Mainnet
+{result.network || network}
 </p>
 
 </div>

@@ -26,25 +26,27 @@ export async function POST(req: Request) {
 
     // Get wallet transactions from Etherscan
 
-    let baseUrl = "https://api.etherscan.io/api";
+const baseUrl = "https://api.etherscan.io/v2/api";
 
+let chainId = "1"; // Ethereum
 
 if (network === "polygon") {
-  baseUrl = "https://api.polygonscan.com/api";
+  chainId = "137";
 }
 
 else if (network === "base") {
-  baseUrl = "https://api.basescan.org/api";
+  chainId = "8453";
 }
 
 else if (network === "arbitrum") {
-  baseUrl = "https://api.arbiscan.io/api";
+  chainId = "42161";
 }
 
 
 const url =
   `${baseUrl}` +
-  `?module=account` +
+  `?chainid=${chainId}` +
+  `&module=account` +
   `&action=txlist` +
   `&address=${address}` +
   `&startblock=0` +
@@ -57,6 +59,7 @@ const url =
 
     const data = await response.json();
 
+    console.log("Etherscan Response:", data);
 
     if (data.status !== "1") {
 
@@ -113,19 +116,32 @@ const url =
     Simple Trust Algorithm
     */
 
-    let score = 50;
+   let score = 50;
+
+// Transaction reputation
+if (txCount === 0) {
+  score -= 25;
+}
+
+else if (txCount < 10) {
+  score -= 10;
+}
+
+else if (txCount >= 10 && txCount < 100) {
+  score += 10;
+}
+
+else if (txCount >= 100 && txCount < 500) {
+  score += 25;
+}
+
+else if (txCount >= 500) {
+  score += 40;
+}
 
 
-    if (txCount > 10) score += 15;
-
-    if (txCount > 100) score += 15;
-
-    if (txCount > 500) score += 20;
-
-
-    if (score > 100)
-      score = 100;
-
+// Keep score between 0 and 100
+score = Math.max(0, Math.min(score, 100));
 
     let risk = "HIGH";
 let scamProbability = 80;
